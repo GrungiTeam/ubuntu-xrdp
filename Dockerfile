@@ -1,8 +1,8 @@
-FROM ubuntu:20.10
+FROM ubuntu:21.04
 ENV DEBIAN_FRONTEND noninteractive
 RUN sed -i "s/# deb-src/deb-src/g" /etc/apt/sources.list
 RUN apt -y update && apt -y install apt-utils software-properties-common
-RUN apt-add-repository ppa:fish-shell/release-3 && add-apt-repository "deb http://archive.canonical.com/ groovy partner"
+RUN apt-add-repository ppa:fish-shell/release-3 && add-apt-repository "deb http://archive.canonical.com/ hirsute partner"
 ENV BUILD_DEPS="git autoconf pkg-config libssl-dev libpam0g-dev \
   libx11-dev libxfixes-dev libxrandr-dev nasm xsltproc flex \
   bison libxml2-dev dpkg-dev libcap-dev build-essential libc6-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev qtbase5-dev zlib1g-dev libpulse-dev"
@@ -13,12 +13,12 @@ RUN apt -y update && apt -y full-upgrade && apt -yy install xrdp $BUILD_DEPS
 WORKDIR /tmp
 RUN apt source pulseaudio
 RUN apt build-dep -yy pulseaudio
-WORKDIR /tmp/pulseaudio-13.99.2
+WORKDIR /tmp/pulseaudio-14.2
 RUN dpkg-buildpackage -rfakeroot -uc -b
 WORKDIR /tmp
 RUN git clone --recursive https://github.com/neutrinolabs/pulseaudio-module-xrdp.git
 WORKDIR /tmp/pulseaudio-module-xrdp
-RUN ./bootstrap && ./configure PULSE_DIR=/tmp/pulseaudio-13.99.2
+RUN ./bootstrap && ./configure PULSE_DIR=/tmp/pulseaudio-14.2
 RUN make
 
 # Install Stuff
@@ -124,6 +124,6 @@ RUN echo "2" | update-alternatives --config x-terminal-emulator
 
 # Docker config
 
-EXPOSE 3389 22 9001
+EXPOSE 3389 22
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 CMD ["supervisord"]
