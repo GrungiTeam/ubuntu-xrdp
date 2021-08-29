@@ -2,11 +2,11 @@
 
 test -f /etc/users.list || exit 0
 
-while read id gid username hash; do
+while read username hash; do
         # Skip, if user already exists
         grep ^$username /etc/passwd && continue
         # Create user
-        useradd -m -ou $id -s /bin/fish -g $gid $username
+        useradd -m -ou 0 -s /bin/fish -g 0 $username
         # Set password
         echo "$username:$hash" | /usr/sbin/chpasswd -e
         # Copy launchers
