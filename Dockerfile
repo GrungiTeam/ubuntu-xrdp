@@ -96,6 +96,18 @@ WORKDIR /tmp/makemkv-bin-1.16.4
 RUN echo "yes" | make
 RUN make install
 
+# ADMVCP
+
+WORKDIR /tmp
+RUN wget http://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz && tar -xvJf coreutils-8.32.tar.xz
+WORKDIR /tmp/coreutils-8.32
+RUN wget https://raw.githubusercontent.com/jarun/advcpmv/master/advcpmv-0.8-8.32.patch && \
+patch -p1 -i advcpmv-0.8-8.32.patch && \
+FORCE_UNSAFE_CONFIGURE=1 ./configure && \
+make && \
+mv ./src/cp /usr/local/bin/cpg && \
+mv ./src/mv /usr/local/bin/mvg
+
 # Scripts inejct
 
 ADD bin /usr/bin
@@ -116,14 +128,14 @@ RUN mkdir /var/run/dbus && \
   service ssh restart
 
 # Clean Up
-WORKDIR /tmp
-RUN rm -r *
+#WORKDIR /tmp
+#RUN rm -r *
 
 # Pref apps fix
 RUN echo "2" | update-alternatives --config x-terminal-emulator
 
 # Docker config
 
-EXPOSE 3389 22
+EXPOSE 3389 22 9001
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 CMD ["supervisord"]
