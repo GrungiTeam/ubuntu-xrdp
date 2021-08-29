@@ -128,8 +128,8 @@ RUN mkdir /var/run/dbus && \
   service ssh restart
 
 # Clean Up
-#WORKDIR /tmp
-#RUN rm -r *
+WORKDIR /tmp
+RUN rm -r *
 
 # Pref apps fix
 RUN echo "2" | update-alternatives --config x-terminal-emulator
