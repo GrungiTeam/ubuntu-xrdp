@@ -123,7 +123,6 @@ RUN mkdir /var/run/dbus && \
   locale-gen en_US.UTF-8 && \
   echo "pulseaudio -D --enable-memfd=True" > /etc/skel/.Xsession && \
   echo "xfce4-session" >> /etc/skel/.Xsession && \
-  rm -rf /etc/xrdp/rsakeys.ini /etc/xrdp/*.pem && \
   sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/g" /etc/ssh/sshd_config && \
   service ssh restart
 
