@@ -4,7 +4,7 @@
 
 This dockerfile contains a Ubuntu 21.04 image with some tools needed for generic stuff related to multimedia handling. It comes with mkvtoolnix, MakeMKV, RenameMyTvSeries (beta), ffmpeg, aria2, vlc, mediainfo and so on.
 
-It is based on XFCE4 with XRDP and PulseAudio module.
+It is based on XFCE4 with XRDP.
 
 ## :whale: Manual Deploying
 

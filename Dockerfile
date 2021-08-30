@@ -1,25 +1,10 @@
 FROM ubuntu:21.04
 ENV DEBIAN_FRONTEND noninteractive
-RUN sed -i "s/# deb-src/deb-src/g" /etc/apt/sources.list
 RUN apt -y update && apt -y install apt-utils software-properties-common
-RUN apt-add-repository ppa:fish-shell/release-3 && add-apt-repository "deb http://archive.canonical.com/ hirsute partner"
 ENV BUILD_DEPS="git autoconf pkg-config libssl-dev libpam0g-dev \
   libx11-dev libxfixes-dev libxrandr-dev nasm xsltproc flex \
   bison libxml2-dev dpkg-dev libcap-dev build-essential libc6-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev qtbase5-dev zlib1g-dev libpulse-dev"
 RUN apt -y update && apt -y full-upgrade && apt -yy install xrdp $BUILD_DEPS
-
-# Build and pulse module
-
-WORKDIR /tmp
-RUN apt source pulseaudio
-RUN apt build-dep -yy pulseaudio
-WORKDIR /tmp/pulseaudio-14.2
-RUN dpkg-buildpackage -rfakeroot -uc -b
-WORKDIR /tmp
-RUN git clone --recursive https://github.com/neutrinolabs/pulseaudio-module-xrdp.git
-WORKDIR /tmp/pulseaudio-module-xrdp
-RUN ./bootstrap && ./configure PULSE_DIR=/tmp/pulseaudio-14.2
-RUN make
 
 # Install Stuff
 
@@ -77,12 +62,6 @@ RUN wget https://www.tweaking4all.com/downloads/betas/RenameMyTVSeries-2.1.6-GTK
   mkdir /usr/share/RenameMyTVSeries && \
   tar -zxvf RenameMyTVSeries-2.1.6-GTK-b23-beta-Linux-64bit-shared-ffmpeg.tar.gz -C /usr/share/RenameMyTVSeries
 
-# XRDP Audio Module
-
-RUN mkdir -p /var/lib/xrdp-pulseaudio-installer && \
-  cp /tmp/pulseaudio-module-xrdp/src/.libs/module-xrdp-source.so /var/lib/xrdp-pulseaudio-installer && \
-  cp /tmp/pulseaudio-module-xrdp/src/.libs/module-xrdp-sink.so /var/lib/xrdp-pulseaudio-installer
-
 # MakeMKV
 
 WORKDIR /tmp
@@ -121,7 +100,6 @@ RUN mkdir /var/run/dbus && \
   sed -i "s/console/anybody/g" /etc/X11/Xwrapper.config && \
   sed -i "s/xrdp\/xorg/xorg/g" /etc/xrdp/sesman.ini && \
   locale-gen en_US.UTF-8 && \
-  echo "pulseaudio -D --enable-memfd=True" > /etc/skel/.Xsession && \
   echo "xfce4-session" >> /etc/skel/.Xsession && \
   sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/g" /etc/ssh/sshd_config && \
   service ssh restart
