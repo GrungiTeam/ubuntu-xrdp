@@ -11,11 +11,9 @@ RUN apt -y update && apt -y full-upgrade && apt -yy install xrdp $BUILD_DEPS
 RUN apt install -y \
   ca-certificates \
   crudini \
-  firefox \
   less \
   locales \
   openssh-server \
-  pulseaudio \
   supervisor \
   uuid-runtime \
   wget \
@@ -49,6 +47,13 @@ RUN apt install -y \
   htop && \
   apt remove -y light-locker xscreensaver && \
   apt autoremove -y
+
+# Chrome
+
+WORKDIR /tmp
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+	dpkg -i google-chrome-stable_current_amd64.deb && \
+	apt --fix-broken install -y
 
 # Youtube-DLP
 
@@ -100,7 +105,6 @@ RUN mkdir /var/run/dbus && \
   sed -i "s/console/anybody/g" /etc/X11/Xwrapper.config && \
   sed -i "s/xrdp\/xorg/xorg/g" /etc/xrdp/sesman.ini && \
   locale-gen en_US.UTF-8 && \
-  echo "xfce4-session" >> /etc/skel/.Xsession && \
   sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/g" /etc/ssh/sshd_config && \
   service ssh restart
 
@@ -110,6 +114,10 @@ RUN rm -r *
 
 # Pref apps fix
 RUN echo "2" | update-alternatives --config x-terminal-emulator
+
+# Fix vlc as root
+
+RUN sed -i 's/geteuid/getppid/' /usr/bin/vlc 
 
 # Docker config
 
