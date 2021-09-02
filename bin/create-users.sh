@@ -12,5 +12,5 @@ while read username hash; do
         # Copy launchers
         mkdir /home/$username/Desktop
         cp /usr/share/RenameMyTVSeries/RenameMyTVSeries.desktop /home/$username/Desktop/RenameMyTVSeries.desktop
-	echo "xfce4-session" >> /home/$username/.xsession
+        echo "xfce4-session" >> /home/$username/.xsession
 done < /etc/users.list
