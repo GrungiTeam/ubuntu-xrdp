@@ -52,8 +52,7 @@ RUN apt install -y \
 
 WORKDIR /tmp
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-  dpkg -i google-chrome-stable_current_amd64.deb && \
-  apt --fix-broken install -y
+  apt install -y google-chrome-stable_current_amd64.deb
 
 # Youtube-DLP
 
